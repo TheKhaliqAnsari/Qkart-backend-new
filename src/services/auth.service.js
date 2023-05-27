@@ -15,6 +15,12 @@ const ApiError = require("../utils/ApiError");
  * @returns {Promise<User>}
  */
 const loginUserWithEmailAndPassword = async (email, password) => {
+  const userEmail = await userService.getUserByEmail(email);
+  if(!userEmail ||!( await userEmail.isPasswordMatch(password))){
+    throw new ApiError(httpStatus.UNAUTHORIZED,"Incorrect Credentials")
+  }
+  return userEmail
+
 };
 
 module.exports = {

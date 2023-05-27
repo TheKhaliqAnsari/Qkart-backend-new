@@ -4,6 +4,7 @@ const validator = require("validator");
 const config = require("../config/config");
 const ApiError = require("../utils/ApiError");
 const { error } = require("winston");
+const bcrypt = require('bcryptjs')
 
 // TODO: CRIO_TASK_MODULE_UNDERSTANDING_BASICS - Complete userSchema, a Mongoose schema for "users" collection
 const userSchema = mongoose.Schema(
@@ -70,7 +71,9 @@ userSchema.statics.isEmailTaken = async function (email) {
  * @param {string} password
  * @returns {Promise<boolean>}
  */
-userSchema.methods.isPasswordMatch = async function (password) {};
+userSchema.methods.isPasswordMatch = async function (password) {
+  return bcrypt.compare(password, this.password)
+};
 
 /*
  * Create a Mongoose model out of userSchema and export the model as "User"
@@ -80,6 +83,10 @@ userSchema.methods.isPasswordMatch = async function (password) {};
 /**
  * @typedef User
  */
+// userSchema.pre("save",()=>{
+//   // const hashPassword = await bcrypt.hash((password)
+//   // user.password= hashPassword
+// })
 
 const User = mongoose.model("User", userSchema);
 module.exports = { User };

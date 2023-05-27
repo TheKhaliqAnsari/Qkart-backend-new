@@ -43,10 +43,15 @@ const { userService } = require("../services");
  */
 const getUser = catchAsync(async (req, res) => {
   // const {userId} = req.params;
+
   const userData = await userService.getUserById(req.params.userId);
   if (!userData) {
     throw new ApiError(httpStatus.NOT_FOUND, "User not found");
-  } else {
+  } 
+  if(userData.email != req.user.email){
+    throw new ApiError(httpStatus.FORBIDDEN, "User not Authenticated to see other user's data");
+  }
+  else {
     res.json(userData);
   }
 });
